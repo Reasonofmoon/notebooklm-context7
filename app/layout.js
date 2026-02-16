@@ -77,12 +77,95 @@ function ToastContainer({ toasts }) {
   );
 }
 
+const ONBOARDING_STEPS = [
+  {
+    emoji: '🔌',
+    label: 'Bridge 연결',
+    desc: 'Dashboard에서 Bridge 서버 상태를 확인하고, 노트북을 생성하거나 선택합니다.',
+    hint: 'localhost:4317',
+  },
+  {
+    emoji: '◈',
+    label: 'Context7 Studio',
+    desc: '소스를 최대 7개까지 입력하고, Repomix로 코드를 패키징한 뒤 One-Click Bootstrap을 실행합니다.',
+    hint: 'type|value|title',
+  },
+  {
+    emoji: '🧠',
+    label: 'Query Console',
+    desc: '문서 근거 기반으로 AI에게 질문합니다. 템플릿을 활용하면 더욱 빠르게 시작할 수 있습니다.',
+    hint: 'Ctrl + Enter',
+  },
+];
+
+function OnboardingGuide({ onDismiss }) {
+  const [closing, setClosing] = useState(false);
+
+  const handleDismiss = useCallback((skipForever = false) => {
+    setClosing(true);
+    if (skipForever) {
+      try { localStorage.setItem('c7_onboarding_skipped', 'true'); } catch {}
+    }
+    setTimeout(() => onDismiss(), 340);
+  }, [onDismiss]);
+
+  return (
+    <div className={`onboarding-overlay ${closing ? 'closing' : ''}`} onClick={() => handleDismiss(false)}>
+      <div className="onboarding-container" onClick={(e) => e.stopPropagation()}>
+        <h2 className="onboarding-title">Context7 Coder 사용 가이드</h2>
+        <p className="onboarding-subtitle">3단계로 문서 기반 AI 코딩을 시작하세요</p>
+
+        <div className="onboarding-steps">
+          {ONBOARDING_STEPS.map((step, i) => (
+            <>
+              {i > 0 && <div key={`arrow-${i}`} className="step-arrow">→</div>}
+              <div key={i} className="onboarding-step">
+                <div className="step-number">{i + 1}</div>
+                <span className="step-emoji">{step.emoji}</span>
+                <div className="step-label">{step.label}</div>
+                <div className="step-desc">{step.desc}</div>
+                <div className="step-hint">{step.hint}</div>
+              </div>
+            </>
+          ))}
+        </div>
+
+        <button className="onboarding-dismiss" onClick={() => handleDismiss(false)}>
+          ✨ 시작하기
+        </button>
+        <button className="onboarding-skip" onClick={() => handleDismiss(true)}>
+          다시 보지 않기
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FloatingHelpButton({ onClick }) {
+  return (
+    <button className="floating-help-btn" onClick={onClick} title="사용 가이드 보기">
+      ?
+    </button>
+  );
+}
+
 export default function RootLayout({ children }) {
   const [bridgeStatus, setBridgeStatus] = useState('checking');
   const [authStatus, setAuthStatus] = useState(null);
   const [toasts, setToasts] = useState([]);
   const [selectedNotebookId, setSelectedNotebookId] = useState('');
   const [selectedNotebookTitle, setSelectedNotebookTitle] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Show onboarding on first visit
+  useEffect(() => {
+    try {
+      const skipped = localStorage.getItem('c7_onboarding_skipped');
+      if (!skipped) {
+        setShowOnboarding(true);
+      }
+    } catch {}
+  }, []);
 
   const addToast = useCallback((message, type = 'success') => {
     const id = Date.now();
@@ -143,6 +226,12 @@ export default function RootLayout({ children }) {
             </main>
           </div>
           <ToastContainer toasts={toasts} />
+          {showOnboarding && (
+            <OnboardingGuide onDismiss={() => setShowOnboarding(false)} />
+          )}
+          {!showOnboarding && (
+            <FloatingHelpButton onClick={() => setShowOnboarding(true)} />
+          )}
         </AppContext.Provider>
       </body>
     </html>
