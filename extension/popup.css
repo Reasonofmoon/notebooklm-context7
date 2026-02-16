@@ -1,0 +1,151 @@
+:root {
+  --bg: #0b1324;
+  --bg-soft: #13203b;
+  --card: #0f1b32;
+  --line: #2f4368;
+  --text: #d6e5ff;
+  --muted: #9fb3d9;
+  --focus: #6ea8ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(120% 90% at 100% 0%, #1b2f57 0%, transparent 45%),
+    linear-gradient(160deg, #0a1222 0%, #081122 100%);
+}
+
+.app {
+  width: 520px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #b8d1ff;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  background: linear-gradient(180deg, var(--card) 0%, var(--bg-soft) 100%);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #c4d7ff;
+}
+
+label.inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  margin-top: 4px;
+  border: 1px solid #476087;
+  border-radius: 8px;
+  padding: 8px;
+  background: #0a1224;
+  color: var(--text);
+  font-size: 12px;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  outline: 1px solid var(--focus);
+  border-color: var(--focus);
+}
+
+textarea {
+  resize: vertical;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(180deg, #3a82ff 0%, #2c69d6 100%);
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.06);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#bootstrapBtn {
+  background: linear-gradient(180deg, #0ea56f 0%, #0f8a5f 100%);
+}
+
+#queryBtn {
+  background: linear-gradient(180deg, #8d63f6 0%, #7044d8 100%);
+}
+
+#copyResultBtn {
+  background: linear-gradient(180deg, #5c6f95 0%, #4b5e84 100%);
+}
+
+.hint {
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+code {
+  color: #9fbeff;
+}
+
+#result {
+  margin: 0;
+  min-height: 140px;
+  max-height: 280px;
+  overflow: auto;
+  white-space: pre-wrap;
+  border: 1px solid #3a5178;
+  border-radius: 8px;
+  padding: 8px;
+  background: #0a1427;
+  font-size: 11px;
+  line-height: 1.45;
+}

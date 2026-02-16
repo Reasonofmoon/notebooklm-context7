@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Context7 Coder</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>NotebookLM Context7 Coder</h1>
+
+      <section class="card">
+        <h2>Bridge & Notebook</h2>
+        <label>
+          Bridge URL
+          <input id="bridgeUrl" type="text" value="http://localhost:4317" />
+        </label>
+        <div class="row">
+          <button id="checkAuthBtn">Auth Check</button>
+          <button id="listNotebooksBtn">List Notebooks</button>
+          <button id="createNotebookBtn">Create Notebook</button>
+        </div>
+        <label>
+          Notebook Title
+          <input id="notebookTitle" type="text" value="context7-notebook" />
+        </label>
+        <label>
+          Notebook ID
+          <input id="notebookId" type="text" placeholder="UUID" />
+        </label>
+      </section>
+
+      <section class="card">
+        <h2>Repomix</h2>
+        <label>
+          Project Dir (workspace relative)
+          <input id="repoDir" type="text" value="kbob-ocr/app" />
+        </label>
+        <label>
+          Output Path (inside project dir)
+          <input id="repoOutput" type="text" value="artifacts/repomix-pack.md" />
+        </label>
+        <label>
+          Include (optional)
+          <input
+            id="repoInclude"
+            type="text"
+            value="src/**/*,README.md,package.json,next.config.ts"
+          />
+        </label>
+        <label>
+          Ignore (optional)
+          <input
+            id="repoIgnore"
+            type="text"
+            value="**/node_modules/**,**/.next/**,package-lock.json"
+          />
+        </label>
+        <label class="inline">
+          <input id="addPackAsSource" type="checkbox" checked />
+          패키징 결과를 Notebook 소스로 자동 추가
+        </label>
+        <div class="row">
+          <button id="packageBtn">Package Only</button>
+          <button id="bootstrapBtn">One-Click Bootstrap</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Context7 Sources</h2>
+        <p class="hint">
+          한 줄 형식: <code>type|value|title(optional)</code> (최대 7개)
+        </p>
+        <p class="hint">
+          type: <code>url</code>, <code>file</code>, <code>text</code>,
+          <code>youtube</code>, <code>drive</code>
+        </p>
+        <textarea
+          id="sourcesText"
+          rows="8"
+          placeholder="url|https://example.com|공식문서&#10;file|C:\repo\docs\api.md|API Spec"
+        ></textarea>
+        <div class="row">
+          <button id="ingestBtn">Ingest Context7</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Manual-First Query</h2>
+        <label class="inline">
+          <input id="manualMode" type="checkbox" checked />
+          문서 근거 우선 코딩 모드
+        </label>
+        <textarea
+          id="questionText"
+          rows="5"
+          placeholder="예: Next.js 16 라우트 핸들러 에러 처리 패턴을 문서 근거 중심으로 제안해줘."
+        ></textarea>
+        <div class="row">
+          <button id="listSourcesBtn">List Sources</button>
+          <button id="mindmapBtn">Create Mindmap</button>
+          <button id="queryBtn">Query NotebookLM</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Result</h2>
+        <div class="row">
+          <button id="copyResultBtn">Copy Result</button>
+        </div>
+        <pre id="result"></pre>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
