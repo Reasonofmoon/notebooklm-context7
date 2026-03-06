@@ -8,109 +8,173 @@
   </head>
   <body>
     <main class="app">
-      <h1>NotebookLM Context7 Coder</h1>
-
-      <section class="card">
-        <h2>Bridge & Notebook</h2>
-        <label>
-          Bridge URL
-          <input id="bridgeUrl" type="text" value="http://localhost:4317" />
-        </label>
-        <div class="row">
-          <button id="checkAuthBtn">Auth Check</button>
-          <button id="listNotebooksBtn">List Notebooks</button>
-          <button id="createNotebookBtn">Create Notebook</button>
+      <!-- Status Header Bar -->
+      <header class="status-bar">
+        <span class="app-title">Context7 Coder</span>
+        <div class="status-chips">
+          <span id="chipBridge" class="chip chip--unknown" title="Bridge 서버 연결 상태">
+            <span class="chip-dot"></span> Bridge
+          </span>
+          <span id="chipAuth" class="chip chip--unknown" title="인증 상태">
+            <span class="chip-dot"></span> Auth
+          </span>
+          <span id="chipNotebook" class="chip chip--unknown" title="노트북 연결 상태">
+            <span class="chip-dot"></span> Notebook
+          </span>
         </div>
-        <label>
-          Notebook Title
-          <input id="notebookTitle" type="text" value="context7-notebook" />
-        </label>
-        <label>
-          Notebook ID
-          <input id="notebookId" type="text" placeholder="UUID" />
-        </label>
-      </section>
+      </header>
 
-      <section class="card">
-        <h2>Repomix</h2>
-        <label>
-          Project Dir (workspace relative)
-          <input id="repoDir" type="text" value="kbob-ocr/app" />
-        </label>
-        <label>
-          Output Path (inside project dir)
-          <input id="repoOutput" type="text" value="artifacts/repomix-pack.md" />
-        </label>
-        <label>
-          Include (optional)
-          <input
-            id="repoInclude"
-            type="text"
-            value="src/**/*,README.md,package.json,next.config.ts"
-          />
-        </label>
-        <label>
-          Ignore (optional)
-          <input
-            id="repoIgnore"
-            type="text"
-            value="**/node_modules/**,**/.next/**,package-lock.json"
-          />
-        </label>
-        <label class="inline">
-          <input id="addPackAsSource" type="checkbox" checked />
-          패키징 결과를 Notebook 소스로 자동 추가
-        </label>
-        <div class="row">
-          <button id="packageBtn">Package Only</button>
-          <button id="bootstrapBtn">One-Click Bootstrap</button>
-        </div>
-      </section>
+      <!-- Step Navigation -->
+      <nav class="step-nav">
+        <button class="step-tab active" data-step="1">
+          <span class="step-num">1</span> Connect
+        </button>
+        <button class="step-tab" data-step="2">
+          <span class="step-num">2</span> Setup
+        </button>
+        <button class="step-tab" data-step="3">
+          <span class="step-num">3</span> Query
+        </button>
+        <button class="step-tab" data-step="4">
+          <span class="step-num">4</span> Result
+        </button>
+      </nav>
 
-      <section class="card">
-        <h2>Context7 Sources</h2>
-        <p class="hint">
-          한 줄 형식: <code>type|value|title(optional)</code> (최대 7개)
-        </p>
-        <p class="hint">
-          type: <code>url</code>, <code>file</code>, <code>text</code>,
-          <code>youtube</code>, <code>drive</code>
-        </p>
-        <textarea
-          id="sourcesText"
-          rows="8"
-          placeholder="url|https://example.com|공식문서&#10;file|C:\repo\docs\api.md|API Spec"
-        ></textarea>
-        <div class="row">
-          <button id="ingestBtn">Ingest Context7</button>
+      <!-- Step 1: Connect -->
+      <section class="step-panel active" data-step="1">
+        <div class="card">
+          <h2>🔌 Bridge & Notebook</h2>
+          <label>
+            Bridge URL
+            <input id="bridgeUrl" type="text" value="http://localhost:4317" />
+          </label>
+          <label>
+            Notebook Title
+            <input id="notebookTitle" type="text" value="context7-notebook" />
+          </label>
+          <label>
+            Notebook 선택
+            <div class="notebook-selector">
+              <select id="notebookSelect">
+                <option value="">-- 노트북을 선택하세요 --</option>
+              </select>
+              <button id="refreshNotebooksBtn" class="btn-icon" title="목록 새로고침">🔄</button>
+            </div>
+          </label>
+          <label>
+            또는 Notebook ID 직접 입력
+            <input id="notebookId" type="text" placeholder="UUID 직접 입력" />
+          </label>
+          <div class="row">
+            <button id="createNotebookBtn" class="btn-secondary">+ Create Notebook</button>
+          </div>
+          <p class="hint">팝업 열릴 때 Bridge/Auth 상태가 자동 확인됩니다.</p>
         </div>
       </section>
 
-      <section class="card">
-        <h2>Manual-First Query</h2>
-        <label class="inline">
-          <input id="manualMode" type="checkbox" checked />
-          문서 근거 우선 코딩 모드
-        </label>
-        <textarea
-          id="questionText"
-          rows="5"
-          placeholder="예: Next.js 16 라우트 핸들러 에러 처리 패턴을 문서 근거 중심으로 제안해줘."
-        ></textarea>
+      <!-- Step 2: Setup -->
+      <section class="step-panel" data-step="2">
+        <div class="card">
+          <h2>📦 Repomix</h2>
+          <label>
+            Project Dir (workspace relative)
+            <input id="repoDir" type="text" value="kbob-ocr/app" />
+          </label>
+          <label>
+            Output Path
+            <input id="repoOutput" type="text" value="artifacts/repomix-pack.md" />
+          </label>
+          <label>
+            Include
+            <input id="repoInclude" type="text" value="src/**/*,README.md,package.json,next.config.ts" />
+          </label>
+          <label>
+            Ignore
+            <input id="repoIgnore" type="text" value="**/node_modules/**,**/.next/**,package-lock.json" />
+          </label>
+          <label class="inline">
+            <input id="addPackAsSource" type="checkbox" checked />
+            패키징 결과를 Notebook 소스로 자동 추가
+          </label>
+        </div>
+
+        <div class="card">
+          <h2>📚 Context7 Sources <span class="source-counter" id="sourceCounter">0/7</span></h2>
+          <p class="hint">
+            한 줄 형식: <code>type|value|title(optional)</code> (최대 7개)<br/>
+            type: <code>url</code>, <code>file</code>, <code>text</code>, <code>youtube</code>, <code>drive</code>
+          </p>
+          <textarea
+            id="sourcesText"
+            rows="6"
+            placeholder="url|https://example.com|공식문서&#10;file|C:\repo\docs\api.md|API Spec"
+          ></textarea>
+        </div>
+
         <div class="row">
-          <button id="listSourcesBtn">List Sources</button>
-          <button id="mindmapBtn">Create Mindmap</button>
-          <button id="queryBtn">Query NotebookLM</button>
+          <button id="packageBtn" class="btn-secondary">Package Only</button>
+          <button id="bootstrapBtn" class="btn-primary-green">🚀 One-Click Bootstrap</button>
         </div>
       </section>
 
-      <section class="card">
-        <h2>Result</h2>
-        <div class="row">
-          <button id="copyResultBtn">Copy Result</button>
+      <!-- Step 3: Query -->
+      <section class="step-panel" data-step="3">
+        <div class="card">
+          <h2>💬 Manual-First Query</h2>
+          <label class="inline">
+            <input id="manualMode" type="checkbox" checked />
+            문서 근거 우선 코딩 모드
+          </label>
+          <div class="query-presets">
+            <button class="preset-btn" data-preset="evidence">📋 근거 우선</button>
+            <button class="preset-btn" data-preset="architecture">🏗 아키텍처</button>
+            <button class="preset-btn" data-preset="debug">🐛 디버깅</button>
+            <button class="preset-btn" data-preset="review">📝 코드리뷰</button>
+          </div>
+          <textarea
+            id="questionText"
+            rows="5"
+            placeholder="예: Next.js 16 라우트 핸들러 에러 처리 패턴을 문서 근거 중심으로 제안해줘."
+          ></textarea>
+          <div class="row">
+            <button id="listSourcesBtn" class="btn-secondary">List Sources</button>
+            <button id="mindmapBtn" class="btn-secondary">Create Mindmap</button>
+            <button id="queryBtn" class="btn-primary-purple">✨ Query NotebookLM</button>
+          </div>
         </div>
-        <pre id="result"></pre>
       </section>
+
+      <!-- Step 4: Result -->
+      <section class="step-panel" data-step="4">
+        <div class="card result-card">
+          <div class="result-tabs">
+            <button class="result-tab active" data-result-tab="answer">💡 Answer</button>
+            <button class="result-tab" data-result-tab="raw">{ } Raw JSON</button>
+          </div>
+          <div id="resultAnswer" class="result-pane active">
+            <div id="answerContent" class="answer-content">결과가 여기에 표시됩니다.</div>
+          </div>
+          <div id="resultRaw" class="result-pane">
+            <pre id="rawContent"></pre>
+          </div>
+          <div class="row result-actions">
+            <button id="copyAnswerBtn" class="btn-secondary">📋 Copy Answer</button>
+            <button id="copyRawBtn" class="btn-secondary">📋 Copy Raw</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress Overlay -->
+      <div id="progressOverlay" class="progress-overlay hidden">
+        <div class="progress-card">
+          <div class="spinner"></div>
+          <p class="progress-title" id="progressTitle">작업 진행 중...</p>
+          <ul class="progress-steps" id="progressSteps"></ul>
+        </div>
+      </div>
+
+      <!-- Legacy hidden element for backward compat -->
+      <pre id="result" class="hidden"></pre>
     </main>
 
     <script src="popup.js"></script>
